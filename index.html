@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Info Form</title>
+<style>
+  table{
+      border-collapse: collapse;
+      width: 100%;
+  }
+  th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+  }
+  th {
+      background-color: #f2f2f2;
+  }
+
+  form{
+    background :white;
+    opacity:0.8;
+  }
+</style>
+</head>
+<body background="indexbg.jpg">
+
+
+
+<form action="score.html" method="get" >
+  <center><h2>Student Info Form</h2></center>
+
+
+  <center>
+    <label for="fullName" >Full Name:</label>
+    <input type="text" id="fullName" name="fullName" pattern="[A-Za-z ]{1,50}" required><br><br>
+
+    <label for="rollNumber">Roll Number:</label>
+    <input type="text" id="rollNumber" name="rollNumber" pattern="[A-Za-z]{4}\d{4}[A-Za-z]{1}" required><br><br>
+</center>
+    <h3>Subjects and Marks:</h3>
+    <table id="subjectTable" align="center">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Out of</th>
+                <th>Obtained Marks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="text" name="subject[]"  pattern="[A-Za-z ]{1,50}"  required></td>
+                <td>
+                    <select name="outOf[]" required>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </td>
+                <td><input type="number" name="marks[]" min="0" required></td>
+                <td><button type="button" onclick="removeSubject(this)">Remove</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button type="button" onclick="addSubject()">Add More Subject</button><br><br>
+
+  <center>  <input type="submit" value="Submit" id="mysubmit"></center>
+</form>
+
+<script>
+function addSubject() {
+    var table = document.getElementById("subjectTable").getElementsByTagName('tbody')[0];
+    var newRow = table.insertRow();
+    var cells = ['subject', 'outOf', 'marks'];
+    for (var i = 0; i < cells.length; i++) {
+        var cell = newRow.insertCell(i);
+        var input = document.createElement("input");
+        if (cells[i] === 'marks') {
+            input.type = "number";
+            input.min = "0";
+        } else if (cells[i] === 'outOf') {
+            input = document.createElement("select");
+            var options = ["50", "100"];
+            for (var j = 0; j < options.length; j++) {
+                var option = document.createElement("option");
+                option.text = options[j];
+                option.value = options[j];
+                input.appendChild(option);
+            }
+        } else {
+            input.type = "text";
+        }
+        input.name = cells[i] + "[]";
+        input.required = true;
+        cell.appendChild(input);
+    }
+    var removeButtonCell = newRow.insertCell(cells.length);
+    var removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.textContent = "Remove";
+    removeButton.onclick = function() {
+        removeSubject(this);
+    };
+    removeButtonCell.appendChild(removeButton);
+}
+
+function removeSubject(button) {
+    var row = button.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+}
+
+</script>
+
+</body>
+</html>

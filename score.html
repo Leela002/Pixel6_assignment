@@ -1,0 +1,135 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scorecard</title>
+<style>
+
+img{
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+  width: 350px;
+  height: 350px;
+}
+
+   body{
+     font-style: oblique 10deg;
+     text-align: center;
+     height: 500;
+     width: 600;
+     margin: 0 auto;
+     background-image: url('scorebg.png');
+     background-size: cover;
+     background-position: center;
+     }
+
+
+    table {
+        border-collapse: collapse;
+        width: 60%;
+        margin: 0 auto;
+
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: center;
+        padding: 4px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .failed {
+        background-color: red;
+    }
+</style>
+</head>
+
+<body>
+  <img src="gif1.gif">
+  <div id="displayData"></div>
+
+  <script>
+  // Function to get URL parameters
+  function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
+  // Get form data from URL parameters
+  var fullName = getParameterByName('fullName');
+  var rollNumber = getParameterByName('rollNumber');
+
+  document.getElementById('displayData').innerHTML = "<h2>Score Card Of  " + fullName + "</h2>"
+    +"<h3>Roll Number : "+ rollNumber;
+
+</script>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sr. No.</th>
+            <th>Subject</th>
+            <th>Maximum Marks</th>
+            <th>Marks Obtained</th>
+            <th>Percentage</th>
+            <th>Grade</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Scorecard data will be dynamically inserted here -->
+    </tbody>
+</table><br>
+
+
+
+
+<p>Remarks: <!-- Remarks will be dynamically inserted here --></p><br>
+
+
+
+<script>
+var params = new URLSearchParams(window.location.search);
+  var fullName = params.get("fullName");
+  var rollNumber = params.get("rollNumber");
+  document.title = fullName + "'s Scorecard";
+
+var subjects = params.getAll("subject[]");
+var outOf = params.getAll("outOf[]");
+var marks = params.getAll("marks[]");
+
+var tableBody = document.querySelector("table tbody");
+var remarks = [];
+
+for (var i = 0; i < subjects.length; i++) {
+    var percentage = (marks[i] / outOf[i]) * 100;
+    var grade = percentage >= 40 ? (percentage >= 75 ? (percentage >= 90 ? "Distinction" : "First Class") : "Pass") : "Fail";
+    var row = tableBody.insertRow();
+    row.innerHTML = "<td>" + (i + 1) + "</td><td>" + subjects[i] + "</td><td>" + outOf[i] + "</td><td>" + marks[i] + "</td><td>" + percentage.toFixed(2) + "%</td><td>" + grade + "</td>";
+    if (grade === "Fail") {
+        row.classList.add("failed");
+        remarks.push(subjects[i]);
+    }
+}
+
+var remarksText = "";
+if (remarks.length === 0) {
+    remarksText = "Passed with flying colors!";
+} else if (remarks.length === 1) {
+    remarksText = "Failed in " + remarks[0];
+} else {
+    remarksText = "Failed in " + remarks.length + " subjects";
+}
+
+document.querySelector("p").textContent += remarksText;
+
+
+</script>
+</body>
+</html>
